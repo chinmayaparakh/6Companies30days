@@ -1,11 +1,12 @@
 class Solution:
     def getMoneyAmount(self, n: int) -> int:
-        def dfs(i, j):
-            if i >= j:
-                return 0
-            res = float('inf')
-            for k in range(i, j + 1):
-                res = min(res, max(dfs(i, k - 1), dfs(k + 1, j)) + k)
-            return res
-        res = dfs(1, n)
-        return res
+        dp = [[0] * (n + 1) for _ in range(n + 1)]
+        for length in range(2, n + 1):
+            for left in range(1, n - length + 2):
+                right = left + length - 1
+                dp[left][right] = float('inf')
+                for k in range(left + 1, right):
+                    dp[left][right] = min(dp[left][right], max(dp[left][k - 1], dp[k + 1][right]) + k)
+                if left + 1 == right:
+                    dp[left][left + 1] = left
+        return dp[1][n]
